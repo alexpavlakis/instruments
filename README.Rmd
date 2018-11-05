@@ -1,0 +1,91 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# instruments
+
+Instruments makes it easy to fit instrumental variable regression models.  It has two core functions: 
+
+1. `iv.lm` for estimating linear regression models with instrumental variables;
+2. `iv.glm` for estimating generalized linear models with instrumental variables.
+
+## Linear models
+
+First we'll create some fake data to demonstrate the linear model.  Suppose you want to estimate the impact of a subscription program on your customers' spending, but you know that customers who tend to spend more also tend to sign up for subscriptions.  How can you disentangle those effects?
+
+Suppose that you also offer discounts to incentivize customers to enroll in subscriptions, and that these discounts are offered at random.  You may be able to use discounts as an instrumental variable to isolate the impact of subscriptions on spending.
+
+```{r lm example}
+# Fake data
+set.seed(56)
+N <- 10e4
+baseline_spending <- rpois(N, 10)
+discount <- rbeta(N, 1, 1)
+subscription <- rbinom(N, 1, p = 1/(1 + exp(-(baseline_spending + discount - 10))))
+total_spending <- baseline_spending + 2*subscription + rnorm(N, 0, 1)
+```
+
+The true impact of a subscription on total spending is 10.  Since the unobserved  variable baseline speding propensity also impacts whether someone gets a subscription, we cannot identify the impact of a subscription on spending with an ordinary linear regression.  The ordinary linear regression will tend to overestimate the impact of a subscription on spending.
+
+```{r estimate}
+lm_ols <- lm(formula = total_spending ~ subscription)
+summary(lm_ols)
+```
+
+Instead we can use an instrumental variable regression, with `discount` as the instrument.
+
+```{r ivlm1}
+library(instruments)
+
+lm_2sls <- iv.lm(formula = total_spending ~ instrument,
+                 instrument_formula = subscription ~ discount)
+
+summary(lm_2sls)
+```
+
+## Generalized Linear Models
+
+Suppose instead that we want to estimate the impact of subscriptions on customer churn.  Continuing our fake data example from above, we define churn as a function of both subscription and baseline spending.
+
+```{r fakedata glm}
+churn <- rbinom(N, 1, 1/(1 + exp(-(-10 + baseline_spending + 2*subscription + rnorm(N, 0, 1)))))
+```
+
+Since churn is a binary variable (0, 1), a linear regression is not appropriate.  Instead we will estimate this model with a logistic regression using the `glm` function in base R and `iv.glm` function in instruments.  As before, the simple `glm` function will overestimate the impact of subscription on churn due to the correlation between baseline spending rates and having a subscription.
+
+```{r glmexample}
+glm_logit <- glm(formula = churn ~ subscription, family = binomial(link = 'logit'))
+glm_iv <- iv.glm(formula = churn ~ instrument, 
+                 instrument_formula = subscription ~ discount, 
+                 family = binomial, link = 'logit')
+
+summary(glm_logit)
+summary(glm_iv)
+```
+
+## Diagnostics
+
+You've probably noticed that `iv.lm` and `iv.glm` print the correlation between the independent variable and the instrument and the correlation betweent the instrument and the regression error term.  These two metrics help understand whether the model is valid.
+
+Instrumental variable regression models rely on two assumptions:
+
+1. Exclusion restriction: the instrument is not correlated with the error term;
+2. Validity: the instrument is correlated with the endogenous explanatory variable (subscription, in our example).
+
+We can also use the `diagnose` funcion to automatically evaluate a fit `iv` model.
+
+```{r diagnose}
+diagnose(glm_iv)
+```
