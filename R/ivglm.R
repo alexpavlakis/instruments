@@ -33,9 +33,6 @@ iv.glm <- function(formula,
   if(length(grep("instrument", formula)) == 0) {
     stop("you must include instrument in the formula as a placeholder")
   }
-  if(length(instrument_formula) != 3) {
-    stop("instrument_formula must be a formula with one dependent and one independent variable")
-  }
 
   # Instrument info
   instruments <- all.vars(instrument_formula)[-1]
