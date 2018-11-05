@@ -1,8 +1,8 @@
 #' Diagnose problems with iv models.
 #'
 #' For instrumental variable models to be valid, instruments should be correlated with the variable for which they are instrumenting; and not correlated with the error term in the regression model.  This function diagnoses potential problems with either of those criteria.
-#' @param formula the formula of the linear regression
-#' @param instrument_formula
+#' @param x an object of class ivm
+#' @param thresh arbitrary threshold for correlations.  defaults to 0.1.
 #' @data
 #' @keywords instrument
 #' @export
