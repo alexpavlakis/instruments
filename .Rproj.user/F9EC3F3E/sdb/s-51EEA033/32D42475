@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Estimate linear regression models with an instrumental variable.\n#'\n#' This function allows you to estimate a two-stage least squares linear regression in one step.\n#' @param formula the formula of the linear regression\n#' @param instrument_formula\n#' @data\n#' @keywords instrument\n#' @export\n#' @examples\n#' # Fake data\n#' N <- 1000\n#' z <- rnorm(N, 1, 1)\n#' error <- rnorm(N, 1, 1)\n#' x <- z + error + rnorm(N, 1, 1)\n#' y <- x + error\n#'\n#' # Fit OLS\n#' fit_ols <- lm(formula = y ~ x)\n#'\n#' # Fit 2SLS\n#' fit_2sls <- iv.lm(formula = y ~ instrument, instrument_formula = x ~ z)\n#'\n#' summary(fit_ols)\n#' summary(fit_2sls)\n\niv.lm <- function(formula,\n                 instrument_formula, data = NULL, ...) {\n  if(class(formula) != \"formula\" | class(instrument_formula) != \"formula\") {\n    stop(\"both formula and instrument_formula must be of class formula\")\n  }\n  if(length(grep(\"instrument\", formula)) == 0) {\n    stop(\"you must include instrument in the formula as a placeholder\")\n  }\n  if(length(instrument_formula) != 3) {\n    stop(\"instrument_formula must be a formula with one dependent and one independent variable\")\n  }\n\n  # Instrument info\n  instruments <- all.vars(instrument_formula)[-1]\n  n_instruments <- length(instruments)\n\n  # Estimate model\n  stage_one <- lm(instrument_formula, data = data)\n  assign(paste0('instrument'), stage_one$fitted.values,  envir = environment())\n  stage_two <- lm(formula = as.formula(deparse(formula)), data = data)\n\n  # Diagnostics\n  cor_w_var <- vector('numeric', length = n_instruments)\n  cor_w_error <- vector('numeric', length = n_instruments)\n  for(i in seq_along(1:n_instruments)) {\n    cor_w_var[i] <- cor(stage_one$model[, 1], stage_one$model[, (i+1)])\n    cor_w_error[i] <- cor(stage_one$model[, (i+1)], stage_two$residuals)\n    cat(paste0(\"correlation between \", names(stage_one$model)[1], \" and \", names(stage_one$model)[(i+1)], \": \",\n               round(cor_w_var[i], 3),  \"\\n\"))\n    cat(paste0(\"correlation between \", names(stage_one$model)[(i+1)], \" and residuals: \",\n               round(cor_w_error[i], 3),  \"\\n\"))\n  }\n\n  # Return results and diagnostics\n  out <- list(\n    exclusion_restriction = round(cor_w_error, 3),\n    instrument_validity = round(cor_w_var, 3),\n    instruments = instruments,\n    stage_one = stage_one,\n    fit = stage_two\n  )\n  class(out) <- \"ivm\"\n  return(out)\n}\n\n\nsummary.ivm <- function(x) summary(x$fit)\n\nprint.ivm <- function(x) print(x$fit)\n\nplot.ivm <- function(x) plot(x$fit)\n",
+    "created" : 1541446294986.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2254802177",
+    "id" : "32D42475",
+    "lastKnownWriteTime" : 1541452019,
+    "last_content_update" : 1541452019145,
+    "path" : "~/instruments/R/ivlm.R",
+    "project_path" : "R/ivlm.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
