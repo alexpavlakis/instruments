@@ -37,7 +37,7 @@ subscription <- rbinom(N, 1, p = 1/(1 + exp(-(baseline_spending + discount - 10)
 total_spending <- baseline_spending + 2*subscription + rnorm(N, 0, 1)
 ```
 
-The true impact of a subscription on total spending is 10.  Since the unobserved  variable baseline speding propensity also impacts whether someone gets a subscription, we cannot identify the impact of a subscription on spending with an ordinary linear regression.  The ordinary linear regression will tend to overestimate the impact of a subscription on spending.
+The true impact of a subscription on total spending is 2.  Since the unobserved  variable baseline speding propensity also impacts whether someone gets a subscription, we cannot identify the impact of a subscription on spending with an ordinary linear regression.  The ordinary linear regression will tend to overestimate the impact of a subscription on spending.
 
 ```{r estimate}
 lm_ols <- lm(formula = total_spending ~ subscription)
