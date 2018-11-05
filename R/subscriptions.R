@@ -1,7 +1,6 @@
-#' Data on customer spedning, subscriptions, and churn.
+#' Data on customer spending, subscriptions, and churn.
 #'
 #' A simulated dataset of customer spending used to demonstrate the functionality of the instruments package.
-#' The variables are as follows:
 #'
 #' \itemize{
 #'   \item baseline_spending. latent variable with customers' baseline spending rate.
