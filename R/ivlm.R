@@ -1,9 +1,8 @@
 #' Estimate linear regression models with an instrumental variable.
 #'
 #' This function allows you to estimate a two-stage least squares linear regression in one step.
-#' @param formula the formula of the linear regression
-#' @param instrument_formula
-#' @data
+#' @param formula The formula of the main regression problem.  Use `instrument` for the variable that is the result of the `instrument_formula` function.
+#' @param instrument_formula The formula for the first stage of the regression problem.  Estimate an endogenous variable from one (or more) instruments.
 #' @keywords instrument
 #' @export
 #' @examples
@@ -68,9 +67,7 @@ iv.lm <- function(formula,
   return(out)
 }
 
-
+# Methods
 summary.ivm <- function(x) summary(x$fit)
-
 print.ivm <- function(x) print(x$fit)
-
 plot.ivm <- function(x) plot(x$fit)
