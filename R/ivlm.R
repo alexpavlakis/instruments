@@ -71,11 +71,24 @@ iv.lm <- function(model_formula,
 }
 
 # Methods
+model.matrix.ivm <- function(x) model.matrix(x$fit)
+
+model.frame.ivm <- function(x) model.frame(x$fit)
+
+family.ivm <- funtion(x) family(x$fit)
+
 summary.ivm <- function(x) summary(x$fit)
 
 print.ivm <- function(x) print(x$fit)
 
-plot.ivm <- function(x) plot(x$fit)
+nobs.ivm <- function(x) nobs(x$fit)
+
+plot.ivm <- function(x) {
+  cat("stage 1 \n")
+  plot(x$stage_one)
+  cat("stage 2 \n")
+  plot(x$fit)
+}
 
 predict.ivm <- function(x, newdata = NULL, ...) {
   stage_one_pred <- predict(x$stage_one, newdata = newdata)
@@ -84,3 +97,21 @@ predict.ivm <- function(x, newdata = NULL, ...) {
   stage_two_pred <- predict(x$fit, data = model_data)
   return(stage_two_pred)
 }
+
+residuals.ivm <- function(x) {
+  out <- list(
+    stage_one_residuals = x$stage_one$residuals,
+    stage_two_residuals = x$fit$residuals
+  )
+  return(out)
+}
+
+variable.names.ivm <- function(x) {
+  out <- list(
+    stage_one_vars = variable.names(x$stage_one),
+    stage_two_vars = variable.names(x$fit)
+  )
+  return(out)
+}
+
+
