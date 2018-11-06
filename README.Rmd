@@ -21,6 +21,17 @@ Instruments makes it easy to fit instrumental variable regression models.  It ha
 1. `iv.lm` for estimating linear regression models with instrumental variables;
 2. `iv.glm` for estimating generalized linear models with instrumental variables.
 
+Each function takes arguments just like R's `lm` and `glm` functions, but allows you to express one variable as instrumented by one or more instrumental variables.  Say you have an independent variable `outcome` an endogenous dependent variable `endo`, and an instrument `violin`.  You can express a linear instrumental variable regression naturally:
+
+```{r ex1, eval = F}
+iv.lm(outcome ~ endo, endo ~ violin)
+```
+
+If `outcome` is binary, you may want to use a probit model.
+```{r ex2, eval = F}
+iv.glm(outcome ~ endo, endo ~ violin, family = binomial, link = 'probit')
+```
+
 ## Linear models
 
 First we'll create some fake data to demonstrate the linear model.  Suppose you want to estimate the impact of a subscription program on your customers' spending, but you know that customers who tend to spend more also tend to sign up for subscriptions.  How can you disentangle those effects?
