@@ -21,7 +21,7 @@ Instruments makes it easy to fit instrumental variable regression models.  It ha
 1. `iv.lm` for estimating linear regression models with instrumental variables;
 2. `iv.glm` for estimating generalized linear models with instrumental variables.
 
-Each function takes arguments just like R's `lm` and `glm` functions, but allows you to express one variable as instrumented by one or more instrumental variables.  Say you have an independent variable `outcome` an endogenous dependent variable `endo`, and an instrument `violin`.  You can express a linear instrumental variable regression naturally:
+Each function takes arguments just like R's `lm` and `glm` functions, but allows you to express one variable as instrumented by one or more instrumental variables.  Say you have an independent variable `outcome`, an endogenous dependent variable `endo`, and an instrument `violin`.  You can express a linear instrumental variable regression naturally:
 
 ```{r ex1, eval = F}
 iv.lm(outcome ~ endo, endo ~ violin)
@@ -34,9 +34,10 @@ iv.glm(outcome ~ endo, endo ~ violin, family = binomial, link = 'probit')
 
 ## Linear models
 
-First we'll create some fake data to demonstrate the linear model.  Suppose you want to estimate the impact of a subscription program on your customers' spending, but you know that customers who tend to spend more also tend to sign up for subscriptions.  How can you disentangle those effects?
+First we'll create some fake data to demonstrate how instrumental variable regressions work and when they might be appropriate.  Suppose you want to estimate the impact of a subscription program on customers' spending, but you know that customers who tend to spend more also tend to sign up for subscriptions.  How can you disentangle those effects?
 
 Suppose that you also offer incentives (free samples, buy-one-get-one-free, etc) to encourage customers to enroll in subscriptions, and that these incentives are offered at random.  You may be able to use incentives as an instrumental variable to isolate the impact of subscriptions on spending.
+
 
 ```{r lm example}
 # Fake data
