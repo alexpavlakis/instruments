@@ -9,7 +9,7 @@ diagnose(x, thresh = 0.1)
 \arguments{
 \item{x}{an object of class ivm}
 
-\item{thresh}{arbitrary threshold for correlations.  defaults to 0.1.ivpr}
+\item{thresh}{arbitrary threshold for correlations.  defaults to 0.1.}
 }
 \description{
 For instrumental variable models to be valid, instruments should be correlated with the variable for which they are instrumenting; and not correlated with the error term in the regression model.  This function diagnoses potential problems with either of those criteria.
