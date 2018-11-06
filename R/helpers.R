@@ -19,7 +19,7 @@
 #' fit_ols <- lm(formula = y ~ x)
 #'
 #' # Fit 2SLS
-#' fit_2sls <- iv.lm(formula = y ~ instrument, instrument_formula = x ~ z + q)
+#' fit_2sls <- iv.lm(y ~ x, x ~ z + q)
 #'
 #' diagnose(fit_2sls)
 
@@ -39,10 +39,21 @@ diagnose <- function(x, thresh = 0.1) {
   }
 }
 
+
+
+#' Inverse logit function
+#'
+#' @param x a number.
+#' @keywords ivlogit
 #' @export
+
 invlogit <- function(x) 1/(1 + exp(-x))
 
-#' @export
+
+#' Internal function for identifying instruments
+#'
+#' @param formula1 model formula
+#' @param formula2 instrument formula
 find_instruments <- function(formula1, formula2) {
   f1_covariates <- all.vars(formula1)[-1]
   instrumented <- f1_covariates[f1_covariates %in% all.vars(formula2)]

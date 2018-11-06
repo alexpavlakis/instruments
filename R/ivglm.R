@@ -1,10 +1,12 @@
-#' Estimate linear regression models with an instrumental variable.
+#' Estimate generalized linear models with an instrumental variable.
 #'
-#' This function allows you to estimate a two-stage least squares linear regression in one step.
-#' @param model_formula The formula of the main regression problem.  Use `instrument` for the variable that is the result of the `instrument_formula` function.
+#' This function allows you to estimate two stage generalized linear models in one step.
+#' @param model_formula The formula of the main regression problem.
 #' @param instrument_formula The formula for the first stage of the regression problem.  Estimate an endogenous variable from one (or more) instruments. If blank, defaults to regular glm.
-#' @family The distribution family of the outcome variable.
-#' @link The link function to the outcome variable.
+#' @param family The distribution family of the outcome variable.
+#' @param link The link function to the outcome variable.
+#' @param data (optional) A data frame containing all variables for the regression model.
+#' @param ... Additional arguments to pass to glm().
 #' @keywords instrument
 #' @export
 #' @examples
@@ -13,12 +15,12 @@
 #' z <- rnorm(N, 1, 1)
 #' error <- rnorm(N, 1, 1)
 #' x <- z + error + rnorm(N, 1, 1)
-#' y <- x + error
+#' y <- rbinom(N, 1, invlogit(x + error))
 #'
-#' Fit glm
+#' # Fit glm
 #' fit_glm <- glm( y ~ x, family = binomial(link = 'logit'))
 #'
-#' Fit with iv
+#' # Fit with iv
 #' fit_iv <- iv.glm(y ~ x, x ~ z, family = binomial, link = 'logit')
 #'
 #' summary(fit_glm)

@@ -1,1 +1,16 @@
 exportPattern("^[[:alpha:]]+")
+importFrom("graphics", "plot")
+importFrom("stats", "as.formula", "binomial", "cor", "family",
+           "formula", "glm", "lm", "model.frame", "model.matrix",
+           "nobs", "predict", "variable.names")
+
+S3method(model.matrix, ivm)
+S3method(model.frame, ivm)
+S3method(summary, ivm)
+S3method(print, ivm)
+S3method(plot, ivm)
+S3method(nobs, ivm)
+S3method(predict, ivm)
+S3method(residuals, ivm)
+S3method(variable.names, ivm)
+S3method(family, ivm)

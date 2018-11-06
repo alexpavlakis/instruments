@@ -27,7 +27,7 @@ y <- x + error
 fit_ols <- lm(formula = y ~ x)
 
 # Fit 2SLS
-fit_2sls <- iv.lm(formula = y ~ instrument, instrument_formula = x ~ z + q)
+fit_2sls <- iv.lm(y ~ x, x ~ z + q)
 
 diagnose(fit_2sls)
 }

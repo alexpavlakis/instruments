@@ -7,9 +7,13 @@
 iv.lm(model_formula, instrument_formula = NULL, data = NULL, ...)
 }
 \arguments{
-\item{model_formula}{The formula of the main regression problem.  Use `instrument` for the variable that is the result of the `instrument_formula` function.}
+\item{model_formula}{The formula of the main regression problem.}
 
 \item{instrument_formula}{The formula for the first stage of the regression problem.  Estimate an endogenous variable from one (or more) instruments.  If blank, defaults to ordinary linear regression.}
+
+\item{data}{(optional) A data frame containing all variables for the regression model.}
+
+\item{...}{Additional arguments to pass to glm().}
 }
 \description{
 This function allows you to estimate a two-stage least squares linear regression in one step.

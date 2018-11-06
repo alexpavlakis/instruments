@@ -1,8 +1,10 @@
 #' Estimate linear regression models with an instrumental variable.
 #'
 #' This function allows you to estimate a two-stage least squares linear regression in one step.
-#' @param model_formula The formula of the main regression problem.  Use `instrument` for the variable that is the result of the `instrument_formula` function.
+#' @param model_formula The formula of the main regression problem.
 #' @param instrument_formula The formula for the first stage of the regression problem.  Estimate an endogenous variable from one (or more) instruments.  If blank, defaults to ordinary linear regression.
+#' @param data (optional) A data frame containing all variables for the regression model.
+#' @param ... Additional arguments to pass to glm().
 #' @keywords instrument
 #' @export
 #' @examples
@@ -69,49 +71,3 @@ iv.lm <- function(model_formula,
   }
   return(out)
 }
-
-# Methods
-model.matrix.ivm <- function(x) model.matrix(x$fit)
-
-model.frame.ivm <- function(x) model.frame(x$fit)
-
-family.ivm <- function(x) family(x$fit)
-
-summary.ivm <- function(x) summary(x$fit)
-
-print.ivm <- function(x) print(x$fit)
-
-nobs.ivm <- function(x) nobs(x$fit)
-
-plot.ivm <- function(x) {
-  cat("stage 1 \n")
-  plot(x$stage_one)
-  cat("stage 2 \n")
-  plot(x$fit)
-}
-
-predict.ivm <- function(x, newdata = NULL, ...) {
-  stage_one_pred <- predict(x$stage_one, newdata = newdata)
-  model_data <- model.frame(formula(x$fit), data = newdata)
-  model_data[, which(names(model_data) == x$instrumented)] <- stage_one_pred$fitted.values
-  stage_two_pred <- predict(x$fit, data = model_data)
-  return(stage_two_pred)
-}
-
-residuals.ivm <- function(x) {
-  out <- list(
-    stage_one_residuals = x$stage_one$residuals,
-    stage_two_residuals = x$fit$residuals
-  )
-  return(out)
-}
-
-variable.names.ivm <- function(x) {
-  out <- list(
-    stage_one_vars = variable.names(x$stage_one),
-    stage_two_vars = variable.names(x$fit)
-  )
-  return(out)
-}
-
-
