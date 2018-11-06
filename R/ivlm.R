@@ -75,7 +75,7 @@ model.matrix.ivm <- function(x) model.matrix(x$fit)
 
 model.frame.ivm <- function(x) model.frame(x$fit)
 
-family.ivm <- funtion(x) family(x$fit)
+family.ivm <- function(x) family(x$fit)
 
 summary.ivm <- function(x) summary(x$fit)
 
