@@ -45,7 +45,7 @@ invlogit <- function(x) 1/(1 + exp(-x))
 #' @export
 find_instruments <- function(formula1, formula2) {
   f1_covariates <- all.vars(formula1)[-1]
-  instrumented <- f1_covariates[f1_covariates == all.vars(formula2)]
+  instrumented <- f1_covariates[f1_covariates %in% all.vars(formula2)]
   instruments <- all.vars(formula2)[-1]
   out <- list(instruments = instruments,
               instrumented = instrumented)

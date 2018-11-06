@@ -25,7 +25,7 @@
 #' summary(fit_iv)
 
 iv.glm <- function(model_formula,
-                   instrument_formula, data = NULL,
+                   instrument_formula = NULL, data = NULL,
                    family = binomial, link = 'logit', ...) {
   if(is.null(instrument_formula)) {
     out <- glm(model_formula, data = data, family = family(link = link))
