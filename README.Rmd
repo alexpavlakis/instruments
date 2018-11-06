@@ -25,15 +25,15 @@ Instruments makes it easy to fit instrumental variable regression models.  It ha
 
 First we'll create some fake data to demonstrate the linear model.  Suppose you want to estimate the impact of a subscription program on your customers' spending, but you know that customers who tend to spend more also tend to sign up for subscriptions.  How can you disentangle those effects?
 
-Suppose that you also offer discounts to incentivize customers to enroll in subscriptions, and that these discounts are offered at random.  You may be able to use discounts as an instrumental variable to isolate the impact of subscriptions on spending.
+Suppose that you also offer incentives (free samples, buy-one-get-one-free, etc) to encourage customers to enroll in subscriptions, and that these incentives are offered at random.  You may be able to use incentives as an instrumental variable to isolate the impact of subscriptions on spending.
 
 ```{r lm example}
 # Fake data
 set.seed(56)
 N <- 10e4
 baseline_spending <- rpois(N, 10)
-discount <- rbeta(N, 1, 1)
-subscription <- rbinom(N, 1, p = 1/(1 + exp(-(baseline_spending + discount - 10))))
+incentive <- sample(c(0, 1), size = N, replace = TRUE)
+subscription <- rbinom(N, 1, p = 1/(1 + exp(-(baseline_spending + incentive - 10))))
 total_spending <- baseline_spending + 2*subscription + rnorm(N, 0, 1)
 ```
 
@@ -44,13 +44,13 @@ lm_ols <- lm(formula = total_spending ~ subscription)
 summary(lm_ols)
 ```
 
-Instead we can use an instrumental variable regression, with `discount` as the instrument.
+Instead we can use an instrumental variable regression, with `incentive` as the instrument.
 
 ```{r ivlm1}
 library(instruments)
 
-lm_2sls <- iv.lm(formula = total_spending ~ instrument,
-                 instrument_formula = subscription ~ discount)
+lm_2sls <- iv.lm(model_formula = total_spending ~ subscription,
+                 instrument_formula = subscription ~ incentive)
 
 summary(lm_2sls)
 ```
@@ -67,8 +67,8 @@ Since churn is a binary variable (0, 1), a linear regression is not appropriate.
 
 ```{r glmexample}
 glm_logit <- glm(formula = churn ~ subscription, family = binomial(link = 'logit'))
-glm_iv <- iv.glm(formula = churn ~ instrument, 
-                 instrument_formula = subscription ~ discount, 
+glm_iv <- iv.glm(model_formula = churn ~ subscription, 
+                 instrument_formula = subscription ~ incentive, 
                  family = binomial, link = 'logit')
 
 summary(glm_logit)
@@ -84,7 +84,7 @@ Instrumental variable regression models rely on two assumptions:
 1. Exclusion restriction: the instrument is not correlated with the error term;
 2. Validity: the instrument is correlated with the endogenous explanatory variable (subscription, in our example).
 
-We can also use the `diagnose` funcion to automatically evaluate a fit `iv` model.
+We can also use the `diagnose` funcion to automatically evaluate a fit `iv` model.  If it returns nothing, that means that your instrumental variable model seems valid.
 
 ```{r diagnose}
 diagnose(glm_iv)

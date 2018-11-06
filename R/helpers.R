@@ -2,7 +2,7 @@
 #'
 #' For instrumental variable models to be valid, instruments should be correlated with the variable for which they are instrumenting; and not correlated with the error term in the regression model.  This function diagnoses potential problems with either of those criteria.
 #' @param x an object of class ivm
-#' @param thresh arbitrary threshold for correlations.  defaults to 0.1.
+#' @param thresh arbitrary threshold for correlations.  defaults to 0.1.ivpr
 #' @data
 #' @keywords instrument
 #' @export
@@ -41,3 +41,15 @@ diagnose <- function(x, thresh = 0.1) {
 
 #' @export
 invlogit <- function(x) 1/(1 + exp(-x))
+
+#' @export
+find_instruments <- function(formula1, formula2) {
+  f1_covariates <- all.vars(formula1)[-1]
+  instrumented <- f1_covariates[f1_covariates == all.vars(formula2)]
+  instruments <- all.vars(formula2)[-1]
+  out <- list(instruments = instruments,
+              instrumented = instrumented)
+  return(out)
+}
+
+

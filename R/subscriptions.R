@@ -4,7 +4,7 @@
 #'
 #' \itemize{
 #'   \item baseline_spending. latent variable with customers' baseline spending rate.
-#'   \item discount.  discount applied on registering subscription.
+#'   \item incentive.  binary variable indicating whether customer was offered an incentive.
 #'   \item subscription. whether customer has a subscription.
 #'   \item total_spending. total spending over a given period.
 #'   \item churn. binary variable indicating whether customer has churned.

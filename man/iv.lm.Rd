@@ -4,12 +4,12 @@
 \alias{iv.lm}
 \title{Estimate linear regression models with an instrumental variable.}
 \usage{
-iv.lm(formula, instrument_formula, data = NULL, ...)
+iv.lm(model_formula, instrument_formula = NULL, data = NULL, ...)
 }
 \arguments{
-\item{formula}{The formula of the main regression problem.  Use `instrument` for the variable that is the result of the `instrument_formula` function.}
+\item{model_formula}{The formula of the main regression problem.  Use `instrument` for the variable that is the result of the `instrument_formula` function.}
 
-\item{instrument_formula}{The formula for the first stage of the regression problem.  Estimate an endogenous variable from one (or more) instruments.}
+\item{instrument_formula}{The formula for the first stage of the regression problem.  Estimate an endogenous variable from one (or more) instruments.  If blank, defaults to ordinary linear regression.}
 }
 \description{
 This function allows you to estimate a two-stage least squares linear regression in one step.
@@ -23,10 +23,10 @@ x <- z + error + rnorm(N, 1, 1)
 y <- x + error
 
 # Fit OLS
-fit_ols <- lm(formula = y ~ x)
+fit_ols <- lm(y ~ x)
 
 # Fit 2SLS
-fit_2sls <- iv.lm(formula = y ~ instrument, instrument_formula = x ~ z)
+fit_2sls <- iv.lm(y ~ x, x ~ z)
 
 summary(fit_ols)
 summary(fit_2sls)
